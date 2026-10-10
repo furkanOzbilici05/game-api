@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -22,8 +23,11 @@ public class PlayerController {
     }
 
     @GetMapping("/players")
-    public List<Player> getPlayers(){
-        return playerService.getAllPlayers();
+    public ResponseEntity<List<PlayerResponse>> getPlayers(){
+        List<Player> players = playerService.getAllPlayers();
+        List<PlayerResponse> responses = players.stream().map(PlayerMapper::toResponse).toList();
+
+        return ResponseEntity.ok(responses);
     }
 
     @GetMapping("/players/search")
@@ -81,6 +85,13 @@ public class PlayerController {
     public ResponseEntity<Void> deletePlayer(@PathVariable int id) {
         playerService.deletePlayer(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @DeleteMapping("/players/{playerId}/weapon")
+    public ResponseEntity<PlayerResponse> unequipWeapon(@PathVariable int playerId){
+        Player player = playerService.unequipWeapon(playerId);
+        PlayerResponse response = PlayerMapper.toResponse(player);
+        return ResponseEntity.ok(response);
     }
 
 }

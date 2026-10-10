@@ -33,9 +33,10 @@ public class PlayerMapper {
             return null;
         }
 
-        return new WeaponResponse(weapon.getId()
-                ,weapon.getName()
-                ,weapon.getDamage()
+        return new WeaponResponse(
+                weapon.getId(),
+                weapon.getName(),
+                weapon.getDamage()
         );
     }
 

@@ -5,7 +5,7 @@ import jakarta.persistence.*;
 @Table(name = "players")
 
 public class Player {
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "weapon_id")
     private Weapon weapon;
 

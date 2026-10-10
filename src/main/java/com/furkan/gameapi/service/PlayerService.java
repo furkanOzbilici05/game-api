@@ -19,7 +19,7 @@ public class PlayerService {
     }
 
     public List<Player> getAllPlayers() {
-        return playerRepository.findAll();
+        return playerRepository.findAllWithWeapon();
     }
 
     public Player createPlayer(Player player){
@@ -70,6 +70,12 @@ public class PlayerService {
 
         player.setWeapon(weapon);
 
+        return playerRepository.save(player);
+    }
+
+    public Player unequipWeapon(int playerId){
+        Player player = getPlayerById(playerId);
+        player.setWeapon(null);
         return playerRepository.save(player);
     }
 }
