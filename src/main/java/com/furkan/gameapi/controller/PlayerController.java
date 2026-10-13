@@ -1,6 +1,7 @@
 package com.furkan.gameapi.controller;
 
 import com.furkan.gameapi.dto.PlayerCreateRequest;
+import com.furkan.gameapi.dto.PlayerPatchRequest;
 import com.furkan.gameapi.dto.PlayerResponse;
 import com.furkan.gameapi.dto.PlayerUpdateRequest;
 import com.furkan.gameapi.mapper.PlayerMapper;
@@ -80,6 +81,12 @@ public class PlayerController {
         return ResponseEntity.ok(response);
     }
 
+    @PatchMapping("/players/{id}")
+    public ResponseEntity<PlayerResponse> patchPlayer(@PathVariable int id, @RequestBody @Valid PlayerPatchRequest request){
+        Player patchedPlayer = playerService.patchPlayer(id, request);
+        PlayerResponse response = PlayerMapper.toResponse(patchedPlayer);
+        return ResponseEntity.ok(response);
+    }
 
     @DeleteMapping("/players/{id}")
     public ResponseEntity<Void> deletePlayer(@PathVariable int id) {

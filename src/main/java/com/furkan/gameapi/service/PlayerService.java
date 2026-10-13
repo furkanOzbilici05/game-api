@@ -1,10 +1,12 @@
 package com.furkan.gameapi.service;
 
+import com.furkan.gameapi.dto.PlayerPatchRequest;
 import com.furkan.gameapi.exception.PlayerNotFoundException;
 import com.furkan.gameapi.model.Player;
 import com.furkan.gameapi.model.Weapon;
 import com.furkan.gameapi.repository.PlayerRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -44,12 +46,13 @@ public class PlayerService {
         playerRepository.delete(player);
     }
 
+    @Transactional
     public Player updatePlayer(int id, Player updatedPlayer) {
         Player player = getPlayerById(id);
 
         player.setName(updatedPlayer.getName());
         player.setHealth(updatedPlayer.getHealth());
-        return playerRepository.save(player);
+        return player;
     }
 
     public List<Player> getPlayersByMinHealth(int minHealth) {
@@ -64,18 +67,49 @@ public class PlayerService {
         return playerRepository.findByNameContainingIgnoreCase(name);
     }
 
+    @Transactional
     public Player equipWeapon(int playerId, int weaponId){
         Player player = getPlayerById(playerId);
         Weapon weapon = weaponService.getWeaponById(weaponId);
 
         player.setWeapon(weapon);
 
-        return playerRepository.save(player);
+        return player;
     }
 
+    @Transactional
     public Player unequipWeapon(int playerId){
         Player player = getPlayerById(playerId);
         player.setWeapon(null);
-        return playerRepository.save(player);
+        return player;
+    }
+    
+    @Transactional
+    public Player patchPlayer(int id, PlayerPatchRequest request){
+        Player player = getPlayerById(id);
+
+        if (request.getName() != null) {
+            if (request.getName().isBlank()) {
+                throw new IllegalArgumentException("Player name cannot be blank");
+            }
+
+            player.setName(request.getName());
+        }
+
+        if (request.getHealth() != null) {
+            player.setHealth(request.getHealth());
+        }
+
+        return player;
+    }
+
+    @Transactional
+    public Player healPlayer(int playerId, int amount){
+        if (amount <= 0) {
+            throw new IllegalArgumentException("Amount cannot be negative");
+        }
+        Player player = getPlayerById(playerId);
+        player.setHealth(player.getHealth() + amount);
+        return player;
     }
 }
