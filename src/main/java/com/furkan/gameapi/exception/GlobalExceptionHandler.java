@@ -6,7 +6,6 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import java.security.PublicKey;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -14,6 +13,11 @@ import java.util.Map;
 public class GlobalExceptionHandler {
     @ExceptionHandler(PlayerNotFoundException.class)
     public ResponseEntity<String> handlePlayerNotFoundException(PlayerNotFoundException e) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+    }
+
+    @ExceptionHandler(AppUserNotFoundException.class)
+    public ResponseEntity<String> handleAppUserNotFoundException(AppUserNotFoundException e) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
     }
 
