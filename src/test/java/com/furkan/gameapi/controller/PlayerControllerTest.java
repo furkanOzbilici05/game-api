@@ -2,6 +2,8 @@ package com.furkan.gameapi.controller;
 
 import com.furkan.gameapi.exception.PlayerNotFoundException;
 import com.furkan.gameapi.model.Player;
+import com.furkan.gameapi.service.CustomUserDetailsService;
+import com.furkan.gameapi.service.JwtService;
 import com.furkan.gameapi.service.PlayerService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +23,12 @@ class PlayerControllerTest {
 
     @MockitoBean
     private PlayerService playerService;
+
+    @MockitoBean
+    private JwtService jwtService;
+
+    @MockitoBean
+    private CustomUserDetailsService customUserDetailsService;
 
     @Test
     void getPlayerById_shouldReturn200AndPlayer_whenPlayerExists() throws Exception {
