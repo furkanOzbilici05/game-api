@@ -30,7 +30,7 @@ public class JwtService {
         Date expiryDate = new Date(now.getTime() + 1000 * 60 * 60);
         return Jwts.builder()
                 .subject(appUser.getUsername())
-                .claim("role",appUser.getRole())
+                .claim("role",appUser.getRole().name())
                 .issuedAt(now)
                 .expiration(expiryDate)
                 .signWith(getSigningKey())

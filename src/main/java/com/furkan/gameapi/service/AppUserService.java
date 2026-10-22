@@ -2,7 +2,9 @@ package com.furkan.gameapi.service;
 
 import com.furkan.gameapi.dto.AppUserCreateRequest;
 import com.furkan.gameapi.exception.AppUserNotFoundException;
+import com.furkan.gameapi.exception.UserAlreadyExistsException;
 import com.furkan.gameapi.model.AppUser;
+import com.furkan.gameapi.model.Role;
 import com.furkan.gameapi.repository.AppUserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -23,9 +25,13 @@ public class AppUserService {
     }
 
     public AppUser register(AppUserCreateRequest request){
+        if (appUserRepository.existsByUsername(request.getUsername())) {
+            throw new UserAlreadyExistsException(request.getUsername());
+        }
+
         String encodedPassword = passwordEncoder.encode(request.getPassword());
 
-        AppUser user = new AppUser(request.getUsername(), encodedPassword, "USER");
+        AppUser user = new AppUser(request.getUsername(), encodedPassword, Role.USER);
 
         return appUserRepository.save(user);
     }
