@@ -59,7 +59,7 @@ class PlayerServiceTest {
                 .thenReturn(Optional.of(player));
 
         Player result = playerService.healPlayer(1, 50);
-
+        assertEquals(150, result.getHealth());
         verify(playerRepository, times(1)).findById(1);
         verify(playerRepository, never()).save(any(Player.class));
     }
