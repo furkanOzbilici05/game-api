@@ -9,6 +9,11 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+
+import java.util.List;
 
 import java.util.Optional;
 
@@ -93,5 +98,28 @@ class PlayerServiceTest {
 
         verify(playerRepository, times(1)).findById(1);
         verify(playerRepository, never()).save(any(Player.class));
+    }
+
+    @Test
+    void getAllPlayers_shouldReturnPageFromRepository() {
+
+        Player mage = new Player("Mage", 100);
+        mage.setId(1);
+
+        Player warrior = new Player("Warrior", 150);
+        warrior.setId(2);
+
+        PageRequest pageable = PageRequest.of(0, 2);
+
+        Page<Player> expectedPage = new PageImpl<>(List.of(mage,warrior), pageable, 2);
+
+        when(playerRepository.findAllWithWeapon(pageable)).thenReturn(expectedPage);
+
+        Page<Player> result = playerService.getAllPlayers(pageable);
+
+        assertEquals(2, result.getTotalElements());
+        assertEquals("Mage", result.getContent().get(0).getName());
+
+        verify(playerRepository).findAllWithWeapon(pageable);
     }
 }

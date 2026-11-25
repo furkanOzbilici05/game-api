@@ -8,6 +8,8 @@ import com.furkan.gameapi.mapper.PlayerMapper;
 import com.furkan.gameapi.model.Player;
 import com.furkan.gameapi.service.PlayerService;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -24,10 +26,9 @@ public class PlayerController {
     }
 
     @GetMapping("/players")
-    public ResponseEntity<List<PlayerResponse>> getPlayers(){
-        List<Player> players = playerService.getAllPlayers();
-        List<PlayerResponse> responses = players.stream().map(PlayerMapper::toResponse).toList();
-
+    public ResponseEntity<Page<PlayerResponse>> getPlayers(Pageable pageable){
+        Page<Player> players = playerService.getAllPlayers(pageable);
+        Page<PlayerResponse> responses = players.map(PlayerMapper::toResponse);
         return ResponseEntity.ok(responses);
     }
 

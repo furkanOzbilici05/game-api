@@ -5,6 +5,8 @@ import com.furkan.gameapi.exception.PlayerNotFoundException;
 import com.furkan.gameapi.model.Player;
 import com.furkan.gameapi.model.Weapon;
 import com.furkan.gameapi.repository.PlayerRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,8 +22,8 @@ public class PlayerService {
         this.weaponService = weaponService;
     }
 
-    public List<Player> getAllPlayers() {
-        return playerRepository.findAllWithWeapon();
+    public Page<Player> getAllPlayers(Pageable pageable) {
+        return playerRepository.findAllWithWeapon(pageable);
     }
 
     public Player createPlayer(Player player){
@@ -78,12 +80,11 @@ public class PlayerService {
     }
 
     @Transactional
-    public Player unequipWeapon(int playerId){
+    public Player unequipWeapon(int playerId) {
         Player player = getPlayerById(playerId);
         player.setWeapon(null);
         return player;
     }
-    
     @Transactional
     public Player patchPlayer(int id, PlayerPatchRequest request){
         Player player = getPlayerById(id);
